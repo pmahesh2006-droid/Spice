@@ -21,7 +21,10 @@ app.post("/webhook", (req, res) => {
     // Sometimes quantity is stored in context
     if (!quantity && contexts && contexts.length > 0) {
         const contextParams = contexts[0].parameters;
-        quantity = contextParams.number;
+        // Add this check to ensure contextParams is not undefined
+        if (contextParams) {
+            quantity = contextParams.number;
+        }
     }
 
     // Intent 07: Provide_Quantity
@@ -29,10 +32,7 @@ app.post("/webhook", (req, res) => {
         const subtotal = quantity * biryaniPrice;
 
         responseText =
-`🇸🇬 Spice Machan SG
-Biryani x${quantity} = SGD ${subtotal.toFixed(2)}
-
-Would you like to add a drink? (SGD 2.00)`;
+`🇸🇬 Spice Machan SG\nBiryani x${quantity} = SGD ${subtotal.toFixed(2)}\n\nWould you like to add a drink? (SGD 2.00)`;
 
     }
 
@@ -43,11 +43,7 @@ Would you like to add a drink? (SGD 2.00)`;
         const total = subtotal + gst;
 
         responseText =
-`Drink added 🥤
-
-Subtotal: SGD ${subtotal.toFixed(2)}
-GST (9%): SGD ${gst.toFixed(2)}
-Total: SGD ${total.toFixed(2)}`;
+`Drink added 🥤\n\nSubtotal: SGD ${subtotal.toFixed(2)}\nGST (9%): SGD ${gst.toFixed(2)}\nTotal: SGD ${total.toFixed(2)}`;
     }
 
     // Intent 09: No_Drink
@@ -57,11 +53,7 @@ Total: SGD ${total.toFixed(2)}`;
         const total = subtotal + gst;
 
         responseText =
-`No drink added.
-
-Subtotal: SGD ${subtotal.toFixed(2)}
-GST (9%): SGD ${gst.toFixed(2)}
-Total: SGD ${total.toFixed(2)}`;
+`No drink added.\n\nSubtotal: SGD ${subtotal.toFixed(2)}\nGST (9%): SGD ${gst.toFixed(2)}\nTotal: SGD ${total.toFixed(2)}`;
     }
 
     // Return response to Dialogflow
